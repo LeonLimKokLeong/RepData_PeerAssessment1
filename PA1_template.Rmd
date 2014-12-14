@@ -89,8 +89,9 @@ new_data = data
 ## For each interval
 for ( interval in steps_by_interval$interval)
 {
-        ## Replace the Action field in MSdataset with the value in activities
-        new_data[ new_data$interval == interval & is.na(new_data$steps) ,"steps" ] = round(steps_by_interval[ steps_by_interval$interval == interval ,"steps" ], 0)
+        ## Replace the missing values in new dataset with the average value
+        new_data[ new_data$interval == interval & is.na(new_data$steps) ,"steps" ] =
+        round(steps_by_interval[ steps_by_interval$interval == interval ,"steps" ], 0)
 }
 
 ```

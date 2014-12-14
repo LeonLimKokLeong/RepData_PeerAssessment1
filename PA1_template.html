@@ -117,7 +117,8 @@ plot(steps_by_interval$interval, steps_by_interval$steps,
 for ( interval in steps_by_interval$interval)
 {
         ## Replace the Action field in MSdataset with the value in activities
-        new_data[ new_data$interval == interval &amp; is.na(new_data$steps) ,&quot;steps&quot; ] = round(steps_by_interval[ steps_by_interval$interval == interval ,&quot;steps&quot; ], 0)
+        new_data[ new_data$interval == interval &amp; is.na(new_data$steps) ,&quot;steps&quot; ] =
+        round(steps_by_interval[ steps_by_interval$interval == interval ,&quot;steps&quot; ], 0)
 }</code></pre>
 <p>With the new dataset, the histogram of the total number of steps taken each day was plotted again and the mean and median was recalculated.</p>
 <pre class="r"><code>#Aggregate steps by date using sum

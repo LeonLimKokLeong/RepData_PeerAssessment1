@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output:
-  html_document:
-    keep_md: yes
----
+# Reproducible Research: Peer Assessment 1
 
 #Introduction
 
@@ -33,7 +28,8 @@ The dataset is stored in a comma-separated-value (CSV) file and there are a tota
 
 ## Loading and preprocessing the data
 
-```{r}
+
+```r
 data = read.csv("./activity.csv")
 ```
 <br>
@@ -41,7 +37,8 @@ data = read.csv("./activity.csv")
 
 ## What is mean total number of steps taken per day?
 
-```{r}
+
+```r
 #Aggregate steps by date using sum
 steps_by_day = aggregate( steps~date, data = data, FUN = sum, na.rm = TRUE)
 
@@ -50,39 +47,60 @@ hist(steps_by_day$steps, col = "blue",
      main = "Total number of steps taken each day",
      breaks=seq(0,max(steps_by_day["steps"]) + 2000, by=2000)
      )
+```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 mean(steps_by_day$steps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(steps_by_day$steps)
 ```
 
-The histogram shows the observation of total number of steps taken a day with a of mean of `r as.integer(mean(steps_by_day$steps))` and a median of `r median(steps_by_day$steps)`.
+```
+## [1] 10765
+```
+
+The histogram shows the observation of total number of steps taken a day with a of mean of 10766 and a median of 10765.
 <br>
 <br>
 
 ## What is the average daily activity pattern?
 
-```{r}
+
+```r
 #Aggregate steps by interval using mean
 steps_by_interval = aggregate( steps~interval, data = data, FUN = "mean", na.rm = TRUE)
 
 plot(steps_by_interval$interval, steps_by_interval$steps,
      type="l", xlab="Interval", ylab = "Steps",
      main = "Average number of steps take across a day")
+```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 max = steps_by_interval[steps_by_interval$steps==max(steps_by_interval$steps),]
 ```
 
-The graph plots the average number of steps taken in a day, with the maximum number of steps of `r as.integer(max["steps"])` steps at interval `r max["interval"]`.
+The graph plots the average number of steps taken in a day, with the maximum number of steps of 206 steps at interval 835.
 <br>
 <br>
 
 ## Imputing missing values
 
-There are a total of `r nrow(data[is.na(data$steps),])` missing values in the dataset. The presence of missing values may introduce bias into some calculations or summaries of the data.
+There are a total of 2304 missing values in the dataset. The presence of missing values may introduce bias into some calculations or summaries of the data.
 
 The missing values are filled with the round off mean value at the same interval in the new dataset.
 
-```{r}
+
+```r
 new_data = data
 
 ## For each interval
@@ -92,12 +110,12 @@ for ( interval in steps_by_interval$interval)
         new_data[ new_data$interval == interval & is.na(new_data$steps) ,"steps" ] =
         round(steps_by_interval[ steps_by_interval$interval == interval ,"steps" ], 0)
 }
-
 ```
 
 With the new dataset, the histogram of the total number of steps taken each day was plotted again and the mean and median was recalculated.
 
-```{r}
+
+```r
 #Aggregate steps by date using sum
 new_steps_by_day = aggregate( steps~date, data = new_data, FUN = sum, na.rm = TRUE)
 
@@ -105,29 +123,43 @@ hist(new_steps_by_day$steps, col = "blue", xlab = "Total Steps per Day",
      main = "Total number of steps taken with missing values filled",
      breaks=seq(0, max(new_steps_by_day["steps"]) + 2000, by=2000)
      )
+```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+```r
 mean(new_steps_by_day$steps)
+```
+
+```
+## [1] 10765.64
+```
+
+```r
 median(new_steps_by_day$steps)
+```
+
+```
+## [1] 10762
 ```
 
 We can see that while both graphs has a similiar shape, the graph with missing values filled has a higher maximum frequecy count.
 
 There is only a minor difference in the mean and median value, as shown in the table below.
 
-```{r echo=FALSE}
 
-Original = c(mean(steps_by_day$steps), median(steps_by_day$steps))
-NA_filled = c(mean(new_steps_by_day$steps), median(new_steps_by_day$steps))
-table = rbind(Original, NA_filled)
-colnames(table) = c("mean", "median")
-table
+```
+##               mean median
+## Original  10766.19  10765
+## NA_filled 10765.64  10762
 ```
 <br>
 <br>
 
 ## Are there differences in activity patterns between weekdays and weekends?
 Using the dataset with the filled-in missing values, we explore the difference in activity pattern between weekdays and weenend.
-```{r}
+
+```r
 days_data = new_data
 # Adding a column day to the data to indicate weekdays.
 days_data$days = weekdays(as.Date(days_data$date, format = "%Y-%m-%d"))
@@ -145,8 +177,9 @@ xyplot(steps~interval|days, data=days_steps_by_interval, type=c("l","g"),
                    y=list(at=seq(0,max(days_steps_by_interval["steps"]),40) )
                    )
        )
-
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
 
 We notice that activities on a weekends slowly build up from interval 500 and relativel evenly distributed across the day at about 100 steps.
 

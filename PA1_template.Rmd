@@ -1,4 +1,5 @@
 ---
+Author: Leon
 title: "Reproducible Research: Peer Assessment 1"
 output: 
 html_document:
@@ -10,7 +11,8 @@ keep_md: true
 It is now possible to collect a large amount of data about personal movement using activity monitoring devices such as a Fitbit, Nike Fuelband, or Jawbone Up. These type of devices are part of the "quantified self" movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. But these data remain under-utilized both because the raw data are hard to obtain and there is a lack of statistical methods and software for processing and interpreting the data.
 
 This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
-
+<br>
+<br>
 
 #Data
 
@@ -44,7 +46,11 @@ data = read.csv("./activity.csv")
 #Aggregate steps by date using sum
 steps_by_day = aggregate( steps~date, data = data, FUN = sum, na.rm = TRUE)
 
-hist(steps_by_day$steps, col = "blue", breaks=seq(0,22000,by=2000), xlab = "Total Steps per Day", main = "Total number of steps taken each day")
+hist(steps_by_day$steps, col = "blue",
+     xlab = "Total Steps per Day",
+     main = "Total number of steps taken each day",
+     breaks=seq(0,max(steps_by_day["steps"]) + 2000, by=2000)
+     )
 
 mean(steps_by_day$steps)
 median(steps_by_day$steps)
@@ -60,7 +66,9 @@ The histogram shows the observation of total number of steps taken a day with a 
 #Aggregate steps by interval using mean
 steps_by_interval = aggregate( steps~interval, data = data, FUN = "mean", na.rm = TRUE)
 
-plot(steps_by_interval$interval, steps_by_interval$steps, type="l", main = "Average number of steps take across a day", xlab="Interval", ylab = "Steps")
+plot(steps_by_interval$interval, steps_by_interval$steps,
+     type="l", xlab="Interval", ylab = "Steps",
+     main = "Average number of steps take across a day")
 
 max = steps_by_interval[steps_by_interval$steps==max(steps_by_interval$steps),]
 ```
@@ -93,7 +101,10 @@ With the new dataset, the histogram of the total number of steps taken each day 
 #Aggregate steps by date using sum
 new_steps_by_day = aggregate( steps~date, data = new_data, FUN = sum, na.rm = TRUE)
 
-hist(new_steps_by_day$steps, col = "blue", breaks=seq(0,22000,by=2000), xlab = "Total Steps per Day", main = "Total number of steps taken with missing values filled")
+hist(new_steps_by_day$steps, col = "blue", xlab = "Total Steps per Day",     
+     main = "Total number of steps taken with missing values filled",
+     breaks=seq(0, max(new_steps_by_day["steps"]) + 2000, by=2000)
+     )
 
 mean(new_steps_by_day$steps)
 median(new_steps_by_day$steps)
@@ -128,7 +139,12 @@ days_data[(days_data$days == "Saturday" | days_data$days == "Sunday"), "days"] =
 days_steps_by_interval = aggregate( steps~interval+days, data = days_data, FUN = "mean")
 
 library(lattice)
-xyplot(steps~interval|days,data=days_steps_by_interval, type=c("l","g"), layout=c(1,2), xlab = "Interval", ylab = "Steps", scales=list(x=list(at=seq(0,2359,100),rot=90 ), y=list(at=seq(0,max(days_steps_by_interval["steps"]),40) ) ) )
+xyplot(steps~interval|days, data=days_steps_by_interval, type=c("l","g"),
+       layout=c(1,2), xlab = "Interval", ylab = "Steps",
+       scales=list(x=list(at=seq(0,2359,100),rot=90 ),
+                   y=list(at=seq(0,max(days_steps_by_interval["steps"]),40) )
+                   )
+       )
 
 ```
 
